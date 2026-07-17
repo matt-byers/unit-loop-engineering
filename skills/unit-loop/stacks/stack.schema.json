@@ -1,0 +1,159 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "stack.schema.json",
+  "title": "Unit-loop stack pack definition",
+  "description": "Contract for a stack pack's stack.yaml. Stack packs declare generic adapter slot names; the consuming project's adapter config (unit-loop.adapter.yaml at the project root; see references/project-adapter.md) maps each slot to a concrete command. Stack packs never contain concrete commands.",
+  "type": "object",
+  "required": [
+    "name",
+    "description",
+    "detection",
+    "adapter_slots",
+    "gates",
+    "routing",
+    "third_party_skills",
+    "docs",
+    "missing_command_behavior"
+  ],
+  "properties": {
+    "name": {
+      "type": "string",
+      "pattern": "^[a-z][a-z0-9-]*$"
+    },
+    "description": {
+      "type": "string",
+      "minLength": 1
+    },
+    "fallback": {
+      "type": "boolean",
+      "description": "True when this stack is the fallback selected only if no more specific stack's markers match."
+    },
+    "detection": {
+      "type": "object",
+      "required": ["markers"],
+      "properties": {
+        "markers": {
+          "type": "array",
+          "minItems": 1,
+          "items": { "$ref": "#/$defs/marker" }
+        }
+      }
+    },
+    "adapter_slots": {
+      "type": "object",
+      "required": ["required"],
+      "properties": {
+        "required": {
+          "type": "array",
+          "minItems": 1,
+          "items": { "$ref": "#/$defs/slot" }
+        },
+        "optional": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/slot" }
+        }
+      }
+    },
+    "gates": {
+      "type": "object",
+      "required": ["deterministic"],
+      "properties": {
+        "deterministic": {
+          "type": "array",
+          "minItems": 1,
+          "items": { "$ref": "#/$defs/slot" }
+        },
+        "optional": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/slot" }
+        }
+      }
+    },
+    "routing": {
+      "type": "object",
+      "required": ["review", "verification"],
+      "properties": {
+        "review": {
+          "type": "array",
+          "minItems": 1,
+          "items": { "$ref": "#/$defs/routingEntry" }
+        },
+        "verification": {
+          "type": "array",
+          "minItems": 1,
+          "items": { "$ref": "#/$defs/routingEntry" }
+        }
+      }
+    },
+    "third_party_skills": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": ["name", "purpose", "when_missing"],
+        "properties": {
+          "name": { "type": "string", "pattern": "^[a-z][a-z0-9-]*$" },
+          "purpose": { "type": "string", "minLength": 1 },
+          "when_missing": { "type": "string", "minLength": 1 }
+        }
+      }
+    },
+    "docs": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "string",
+        "pattern": "^[^/].*\\.md$"
+      }
+    },
+    "missing_command_behavior": {
+      "type": "object",
+      "required": ["required_slot", "optional_slot"],
+      "properties": {
+        "required_slot": { "type": "string", "minLength": 1 },
+        "optional_slot": { "type": "string", "minLength": 1 }
+      }
+    }
+  },
+  "$defs": {
+    "slot": {
+      "description": "Generic gate name mapped to a concrete command by the project's adapter config (unit-loop.adapter.yaml; see references/project-adapter.md); never a command itself.",
+      "enum": [
+        "test-scoped",
+        "test-full",
+        "lint",
+        "typecheck",
+        "build",
+        "build-for-testing",
+        "format",
+        "snapshot",
+        "ui",
+        "api-smoke",
+        "live-run",
+        "perf"
+      ]
+    },
+    "marker": {
+      "type": "object",
+      "description": "A project file signal. Use file for an exact filename, glob for a pattern, manifest plus dependency for a declared package dependency.",
+      "properties": {
+        "file": { "type": "string", "minLength": 1 },
+        "glob": { "type": "string", "minLength": 1 },
+        "manifest": { "type": "string", "minLength": 1 },
+        "dependency": { "type": "string", "minLength": 1 }
+      },
+      "anyOf": [
+        { "required": ["file"] },
+        { "required": ["glob"] },
+        { "required": ["manifest"] }
+      ],
+      "dependentRequired": {
+        "dependency": ["manifest"]
+      }
+    },
+    "routingEntry": {
+      "type": "string",
+      "pattern": "^(agent:[a-z][a-z0-9-]*|/[a-z][a-z0-9-]*)$"
+    }
+  }
+}

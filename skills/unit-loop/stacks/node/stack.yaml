@@ -1,0 +1,58 @@
+name: node
+description: Node.js backend services and CLI tools detected through a package.json without a dominant frontend framework; the fallback JavaScript/TypeScript server stack.
+fallback: true
+detection:
+  markers:
+    - file: package.json
+    - manifest: package.json
+      dependency: express
+    - manifest: package.json
+      dependency: fastify
+adapter_slots:
+  required:
+    - test-scoped
+    - test-full
+    - lint
+    - build
+  optional:
+    - typecheck
+    - format
+    - api-smoke
+    - perf
+gates:
+  deterministic:
+    - test-scoped
+    - test-full
+    - lint
+    - build
+  optional:
+    - typecheck
+    - format
+    - api-smoke
+    - perf
+routing:
+  review:
+    - agent:architecture
+    - agent:security
+    - agent:type-safety
+    - agent:patterns-utilities
+    - agent:simplicity
+  verification:
+    - agent:test-runner
+    - agent:api-prober
+third_party_skills:
+  - name: error-handling-patterns
+    purpose: Typed errors, retry/backoff, circuit breakers, and async error propagation.
+    when_missing: Install it into the harness's skills directory, or apply the runtime's unhandled-rejection and error-first documentation directly.
+  - name: error-monitoring
+    purpose: Wiring crash and error reporting behind a swappable provider.
+    when_missing: Install it, or defer monitoring units until the skill is available.
+  - name: tdd-refactor-guard
+    purpose: Verifying test coverage exists before refactoring existing modules.
+    when_missing: Install it, or manually confirm the touched modules have behavior tests before any refactor unit starts.
+docs:
+  - architecture.md
+  - verification.md
+missing_command_behavior:
+  required_slot: Block the gate, report which slot is unmapped, and ask the project to map it in its adapter config (unit-loop.adapter.yaml at the project root) before the unit can pass.
+  optional_slot: Skip the gate, record the skip and the unmapped slot in the unit result, and continue.

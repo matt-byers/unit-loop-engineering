@@ -1,0 +1,65 @@
+name: fastapi
+description: FastAPI backend services detected through a declared fastapi dependency in pyproject.toml or requirements.txt.
+detection:
+  markers:
+    - manifest: pyproject.toml
+      dependency: fastapi
+    - manifest: requirements.txt
+      dependency: fastapi
+adapter_slots:
+  required:
+    - test-scoped
+    - test-full
+    - lint
+    - typecheck
+  optional:
+    - format
+    - build
+    - api-smoke
+    - live-run
+    - perf
+gates:
+  deterministic:
+    - test-scoped
+    - test-full
+    - lint
+    - typecheck
+  optional:
+    - format
+    - build
+    - api-smoke
+    - live-run
+    - perf
+routing:
+  review:
+    - agent:architecture
+    - agent:security
+    - agent:type-safety
+    - agent:patterns-utilities
+    - agent:performance-database
+    - agent:simplicity
+  verification:
+    - agent:test-runner
+    - agent:api-prober
+third_party_skills:
+  - name: fastapi-templates
+    purpose: Production-ready project structure, async patterns, and dependency injection scaffolding.
+    when_missing: Install it into the harness's skills directory, or follow the project's existing router/service layout as the canonical pattern.
+  - name: python-testing-patterns
+    purpose: pytest fixtures, mocking, parametrization, and async test patterns.
+    when_missing: Install it, or follow the stack verification doc plus the project's existing test conventions.
+  - name: error-handling-patterns
+    purpose: Exception hierarchies, retry/backoff, and graceful degradation for service code.
+    when_missing: Install it, or apply the framework's exception-handler documentation directly.
+  - name: error-monitoring
+    purpose: Wiring crash and error reporting behind a swappable provider.
+    when_missing: Install it, or defer monitoring units until the skill is available.
+  - name: langgraph-docs
+    purpose: Up-to-date guidance when the service embeds LangGraph agent graphs.
+    when_missing: Install it, or consult the framework's official documentation before changing graph, state, or checkpoint code.
+docs:
+  - architecture.md
+  - verification.md
+missing_command_behavior:
+  required_slot: Block the gate, report which slot is unmapped, and ask the project to map it in its adapter config (unit-loop.adapter.yaml at the project root) before the unit can pass.
+  optional_slot: Skip the gate, record the skip and the unmapped slot in the unit result, and continue.

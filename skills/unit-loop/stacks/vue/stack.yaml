@@ -1,0 +1,56 @@
+name: vue
+description: Vue.js web applications detected through a package.json vue dependency, typically built with Vite.
+detection:
+  markers:
+    - manifest: package.json
+      dependency: vue
+    - manifest: package.json
+      dependency: "@vitejs/plugin-vue"
+adapter_slots:
+  required:
+    - test-scoped
+    - test-full
+    - lint
+    - typecheck
+    - build
+  optional:
+    - format
+    - snapshot
+    - ui
+    - perf
+gates:
+  deterministic:
+    - test-scoped
+    - test-full
+    - lint
+    - typecheck
+    - build
+  optional:
+    - format
+    - snapshot
+    - ui
+    - perf
+routing:
+  review:
+    - agent:architecture
+    - agent:security
+    - agent:type-safety
+    - /review-standards
+  verification:
+    - agent:test-runner
+third_party_skills:
+  - name: error-handling-patterns
+    purpose: Component-tree error capture, async error propagation, and graceful degradation.
+    when_missing: Install it into the harness's skills directory, or apply the framework's errorCaptured/onErrorCaptured documentation directly.
+  - name: error-monitoring
+    purpose: Wiring crash and error reporting behind a swappable provider.
+    when_missing: Install it, or defer monitoring units until the skill is available; do not hand-roll a provider integration without it.
+  - name: tdd-refactor-guard
+    purpose: Verifying test coverage exists before refactoring existing components.
+    when_missing: Install it, or manually confirm the touched components have behavior tests before any refactor unit starts.
+docs:
+  - architecture.md
+  - verification.md
+missing_command_behavior:
+  required_slot: Block the gate, report which slot is unmapped, and ask the project to map it in its adapter config (unit-loop.adapter.yaml at the project root) before the unit can pass.
+  optional_slot: Skip the gate, record the skip and the unmapped slot in the unit result, and continue.

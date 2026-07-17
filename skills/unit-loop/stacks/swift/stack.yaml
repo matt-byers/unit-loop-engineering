@@ -1,0 +1,76 @@
+name: swift
+description: Swift and SwiftUI projects built with Swift Package Manager or an Xcode project, including iOS, macOS, watchOS, and multiplatform apps.
+detection:
+  markers:
+    - file: Package.swift
+    - glob: "*.xcodeproj"
+    - glob: "*.xcworkspace"
+    - glob: "project.yml"
+adapter_slots:
+  required:
+    - build
+    - test-scoped
+    - test-full
+  optional:
+    - build-for-testing
+    - lint
+    - format
+    - snapshot
+    - ui
+    - perf
+gates:
+  deterministic:
+    - build
+    - test-scoped
+    - test-full
+  optional:
+    - lint
+    - format
+    - snapshot
+    - ui
+    - perf
+routing:
+  review:
+    - agent:architecture
+    - agent:security
+    - /review-standards
+  verification:
+    - agent:test-runner
+    - /run-simulator
+third_party_skills:
+  - name: coding-best-practices
+    purpose: Modern Swift idioms, architecture patterns, and code quality review.
+    when_missing: Install it into the harness's skills directory, or lean on the stack architecture doc and the project's review agents.
+  - name: concurrency-patterns
+    purpose: Swift 6 strict concurrency, actors, structured concurrency, and data-race fixes.
+    when_missing: Install it, or route concurrency questions to the official Swift concurrency migration guide before implementing.
+  - name: swiftui-debugging
+    purpose: Diagnosing SwiftUI re-render, view-identity, and slow-body problems.
+    when_missing: Install it, or debug with the stack verification doc's live-session iteration guidance.
+  - name: navigation-patterns
+    purpose: NavigationStack, split view, tabs, and programmatic navigation architecture.
+    when_missing: Install it, or follow the project's existing navigation feature as the canonical pattern.
+  - name: ui-review
+    purpose: Human Interface Guidelines, Dynamic Type, and accessibility review for UI units.
+    when_missing: Install it, or add an accessibility pass to the stack review checklist manually.
+  - name: snapshot-test-setup
+    purpose: Bootstrapping visual regression testing with snapshot baselines.
+    when_missing: Install it before adding the first snapshot gate; until then keep the snapshot slot unmapped.
+  - name: networking-layer
+    purpose: Protocol-based networking with async/await and swappable implementations.
+    when_missing: Install it, or copy the project's existing service client as the canonical pattern.
+  - name: error-handling-patterns
+    purpose: Error propagation, typed errors, and graceful degradation.
+    when_missing: Install it, or apply the language's standard error-handling guidance from the stack architecture doc.
+  - name: profiling
+    purpose: Performance profiling, hang diagnosis, and launch-time investigation.
+    when_missing: Install it before mapping the perf slot; until then leave the perf gate unmapped.
+  - name: run-simulator
+    purpose: Building, launching, and screenshotting the app in a simulator for visual verification.
+    when_missing: Install it, or map the ui slot to a project-provided script that boots, installs, and screenshots.
+docs:
+  - architecture.md
+  - verification.md
+missing_command_behavior:
+  required_slot: Block the gate, report which slot is unmapped, and ask the project to map it in its adapter config (unit-loop.adapter.yaml at the project root) before the unit can pass.
+  optional_slot: Skip the gate, record the skip and the unmapped slot in the unit result, and continue.
