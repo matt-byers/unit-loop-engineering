@@ -76,7 +76,7 @@ Use current primary framework documentation only when project guidance and insta
 For substantial work, inspect in parallel:
 
 1. related implementation and architecture patterns;
-2. related tests, fixtures, test conventions, edge cases, and focused and full verification commands;
+2. related tests, fixtures, test conventions, edge cases, and focused and full verification commands — use [test-tooling discovery](../unit-loop/references/test-tooling-discovery.md) to confirm these from the repository itself rather than assuming a stack's typical default;
 3. reusable utilities, skills, scripts, and existing artifacts.
 
 Verify that each planned deliverable does not already exist. When it does, plan to reconcile or adapt it rather than recreate or overwrite it. Record exact reuse and exclusion instructions in the owning unit.

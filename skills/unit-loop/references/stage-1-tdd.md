@@ -27,7 +27,7 @@ Smoke test scenarios from spec:
 
 Your task:
 1. Write one test per smoke test scenario above — these are the primary tests.
-   - Place tests following the consuming project's established test layout (integration/journey tests where the project keeps them, unit tests where it keeps those) — never invent a parallel layout. (Examples only: an iOS project might keep journey tests in an integration test target and logic tests in a unit test target; a backend might use `tests/integration/` and `tests/unit/`.)
+   - Place tests following the consuming project's established test layout (integration/journey tests where the project keeps them, unit tests where it keeps those) — never invent a parallel layout. (Examples only: an iOS project might keep journey tests in an integration test target and logic tests in a unit test target; a backend might use `tests/integration/` and `tests/unit/`.) If the layout or runner isn't already obvious from the unit's context, use `test-tooling-discovery.md` to confirm it from the repository before writing.
    - Name each test after its scenario in the project's naming style: `test_happy_path_sign_in`, `testListExpandsOnFirstItem`, etc.
    - For a unit whose artifact is a setup or procedure document, the primary test must EXECUTE the documented procedure against a temp target — copy exactly the documented destinations, run the documented commands, and require the owning verifier/gate to pass. Section-presence and name checks alone cannot prove the document is sufficient.
 2. Write any additional unit tests needed to cover edge cases not captured by the scenarios.

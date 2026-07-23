@@ -1,0 +1,59 @@
+name: nuxt
+description: Nuxt applications detected through a package.json nuxt dependency — Vue's full-stack meta-framework, covering SSR/hybrid rendering, file-based routing, and Nitro server routes alongside its Vue component layer.
+detection:
+  markers:
+    - manifest: package.json
+      dependency: nuxt
+adapter_slots:
+  required:
+    - test-scoped
+    - test-full
+    - lint
+    - typecheck
+    - build
+  optional:
+    - format
+    - snapshot
+    - ui
+    - api-smoke
+    - live-run
+    - perf
+gates:
+  deterministic:
+    - test-scoped
+    - test-full
+    - lint
+    - typecheck
+    - build
+  optional:
+    - format
+    - snapshot
+    - ui
+    - api-smoke
+    - live-run
+    - perf
+routing:
+  review:
+    - agent:architecture
+    - agent:security
+    - agent:type-safety
+    - /review-standards
+  verification:
+    - agent:test-runner
+    - agent:api-prober
+third_party_skills:
+  - name: error-handling-patterns
+    purpose: Component-tree error capture, server-route error responses, and graceful degradation across SSR and client rendering.
+    when_missing: Install it into the harness's skills directory, or apply the framework's errorCaptured/onErrorCaptured and Nitro error-handling documentation directly.
+  - name: error-monitoring
+    purpose: Wiring crash and error reporting behind a swappable provider on both the server and client entry points.
+    when_missing: Install it, or defer monitoring units until the skill is available; do not hand-roll a provider integration without it.
+  - name: tdd-refactor-guard
+    purpose: Verifying test coverage exists before refactoring existing pages, components, composables, or server routes.
+    when_missing: Install it, or manually confirm the touched surface has behavior tests before any refactor unit starts.
+docs:
+  - architecture.md
+  - verification.md
+missing_command_behavior:
+  required_slot: Block the gate, report which slot is unmapped, and ask the project to map it in its adapter config (unit-loop.adapter.yaml at the project root) before the unit can pass.
+  optional_slot: Skip the gate, record the skip and the unmapped slot in the unit result, and continue.

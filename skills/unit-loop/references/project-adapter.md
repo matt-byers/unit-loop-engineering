@@ -2,6 +2,8 @@
 
 The consuming project maps unit-loop's generic gate slots to concrete commands in `unit-loop.adapter.yaml` at the project's repository root. Stack packs declare which slots they use; the project supplies the commands.
 
+Before mapping slots, confirm what test, lint, build, and browser-automation tooling the project already uses — see `test-tooling-discovery.md`. Map what's actually there; don't guess from the stack's typical default.
+
 ## Format
 
 ```yaml

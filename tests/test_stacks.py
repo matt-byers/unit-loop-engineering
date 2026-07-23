@@ -15,7 +15,7 @@ SKILL_REGISTRY = REFERENCES_DIR / "third-party-skill-registry.md"
 STAGE_ROUTING = REFERENCES_DIR / "stage-routing.md"
 SKILLS_DIR = REPO_ROOT / "skills"
 
-EXPECTED_STACKS = ["swift", "react", "vue", "fastapi", "node"]
+EXPECTED_STACKS = ["swift", "react", "vue", "nuxt", "fastapi", "node"]
 
 SLOT_NAMES = {
     "test-scoped",
@@ -301,6 +301,13 @@ class TestDetectionHints:
             m.get("dependency") == "vite" for m in markers
         ), "bare vite is framework-agnostic and must not mark the vue stack"
 
+    def test_nuxt_detects_package_json_with_nuxt_dependency(self):
+        markers = self._markers("nuxt")
+        assert any(
+            m.get("manifest") == "package.json" and m.get("dependency") == "nuxt"
+            for m in markers
+        )
+
     def test_fastapi_detects_pyproject_with_fastapi_dependency(self):
         markers = self._markers("fastapi")
         assert any(
@@ -332,7 +339,7 @@ class TestGateCoverage:
         )
         assert "build-for-testing" in slots
 
-    @pytest.mark.parametrize("stack_name", ["react", "vue"])
+    @pytest.mark.parametrize("stack_name", ["react", "vue", "nuxt"])
     def test_frontend_stacks_cover_core_slots(self, stack_name):
         data = load_stack(stack_name)
         slots = set(data["adapter_slots"]["required"]) | set(
